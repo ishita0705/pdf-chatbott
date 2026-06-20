@@ -1,0 +1,43 @@
+# Render Blueprint — backend API + Qdrant (private)
+# Deploy: https://dashboard.render.com/ → New → Blueprint → connect GitHub repo
+#
+# After deploy, set CORS_ORIGINS to your Vercel URL (see DEPLOY-VERCEL-RENDER.md)
+
+services:
+  - type: pserv
+    name: pdf-chatbot-qdrant
+    runtime: image
+    image:
+      url: docker.io/qdrant/qdrant:latest
+    plan: starter
+    disk:
+      name: qdrant-data
+      mountPath: /qdrant/storage
+      sizeGB: 1
+
+  - type: web
+    name: pdf-chatbot-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: LLM_PROVIDER
+        value: extractive
+      - key: EMBEDDING_MODEL
+        value: sentence-transformers/all-MiniLM-L6-v2
+      - key: QDRANT_COLLECTION_NAME
+        value: pdf_documents
+      - key: ENVIRONMENT
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+      - key: QDRANT_URL
+        fromService:
+          type: pserv
+          name: pdf-chatbot-qdrant
+          property: hostport
+      - key: CORS_ORIGINS
+        value: '["https://YOUR-APP.vercel.app"]'
+        sync: false
