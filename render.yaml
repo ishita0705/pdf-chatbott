@@ -38,6 +38,5 @@ services:
           type: pserv
           name: pdf-chatbot-qdrant
           property: hostport
-      - key: CORS_ORIGINS
-        value: '["https://YOUR-APP.vercel.app"]'
-        sync: false
+            - key: CORS_ORIGINS
+              value: '["*"]'
