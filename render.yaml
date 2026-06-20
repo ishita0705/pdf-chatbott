@@ -1,7 +1,4 @@
 # Render Blueprint — backend API + Qdrant (private)
-# Deploy: https://dashboard.render.com/ → New → Blueprint → connect GitHub repo
-#
-# After deploy, set CORS_ORIGINS to your Vercel URL (see DEPLOY-VERCEL-RENDER.md)
 
 services:
   - type: pserv
@@ -38,5 +35,5 @@ services:
           type: pserv
           name: pdf-chatbot-qdrant
           property: hostport
-            - key: CORS_ORIGINS
-              value: '["*"]'
+      - key: CORS_ORIGINS
+        value: '["*"]'
